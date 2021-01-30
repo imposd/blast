@@ -48,12 +48,12 @@ export class WS extends EventEmitter {
         if (this.reconnectTimeout) clearTimeout(this.reconnectTimeout);
       });
 
-      // this.ws?.on("close", async () => {
-      //   setTimeout(async () => {
-      //     await this.ws?.removeAllListeners();
-      //     await this.send(2, { token: this.token });
-      //   }, this.options.reconnectTime);
-      // });
+      this.ws?.on("close", async () => {
+        setTimeout(async () => {
+          await this.ws?.removeAllListeners();
+          await this.send(2, { token: this.token });
+        }, this.options.reconnectTime);
+      });
 
       this.ws?.on("message", async (data: any) => {
         const body = JSON.parse(data);
@@ -63,8 +63,6 @@ export class WS extends EventEmitter {
       this.reconnectTimeout = setTimeout(() => this.destroy(true), this.options.reconnectTime);
     });
   }
-
-  async reconnect() {}
 
   async destroy(reconnect: boolean = true) {
     if (!this.ws) return;
